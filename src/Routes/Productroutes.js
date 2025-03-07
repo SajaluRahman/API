@@ -1,16 +1,12 @@
-const express = require('express');
-const app = express();
-const port = 3000;
-const connectDB = require('./db');
-const apiRouter = require('./routes/index');  
+const express = require("express");
+const { getProducts, getProductById, createProduct, updateProduct, deleteProduct } = require("../controler/ProductController");
 
-app.use(express.json());  
+const router = express.Router();
 
-app.use('/api', apiRouter); 
+router.get("/", getProducts);
+router.get("/:id", getProductById);
+router.post("/", createProduct);
+router.put("/:id", updateProduct);
+router.delete("/:id", deleteProduct);
 
-connectDB();
-
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
-  
+module.exports = router;

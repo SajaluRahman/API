@@ -1,21 +1,26 @@
-console.log("MongoDB URI:",process.env.MONGO_URI); // Debugging
+require("dotenv").config(); // Load environment variables
+const express = require("express");
+const connectDB = require("./db");
+const productRoutes = require("./Routes/Productroutes");
+const errorHandler = require("./middleware/errorHandler");
 
-const mongoose = require("mongoose");
+const app = express();
 
-const connectDB = async () => {
-  try {
-    if (!process.env.MONGO_URI) {
-      throw new Error("MONGO_URI is missing in .env file");
-    }
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log("MongoDB Connected");
-  } catch (error) {
-    console.error("Database connection failed:", error);
-    process.exit(1);
-  }
-};
+// Connect to MongoDB
+connectDB();
 
-module.exports = connectDB;
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(express.json());
+
+// Routes
+app.use("/api/products", productRoutes);
+
+// Error Handling Middleware
+app.use(errorHandler);
+
+// Start Server
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
